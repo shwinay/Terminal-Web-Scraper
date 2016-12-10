@@ -7,29 +7,30 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class ScrapeTime 
+public class ScrapeWeather 
 {
-
+	
 	//VARIABLES
 	Document doc;
 	Document parser;
-	String time;
+	String weather;
+	
 	
 	//CONSTRUCTOR
-	public ScrapeTime()
+	public ScrapeWeather()
 	{
 		
 	}
 	
 	
 	//METHODS
-	public void scrapeTime(String searchQuery)
+	public void scrapeWeather(String searchQuery)
 	{
-		try 
+		try
 		{
 			doc = Jsoup.connect("https://www.timeanddate.com/worldclock/results.html?query=" + searchQuery).get();
-		} 
-		catch (IOException e) 
+		}
+		catch (Exception e)
 		{
 			System.out.println("Something has gone wrong with your query. Please check your spelling, ensure network connection and try again.");
 		}
@@ -37,19 +38,16 @@ public class ScrapeTime
 		//If query specific enough to pull webpage directly, then, will be done in the try block
 		try
 		{
-			Element timeElement = doc.getElementById("ct");
-			time = Jsoup.parse(timeElement.toString()).text();
+			Element weatherElement = doc.getElementById("wt-tp");
+			weather = Jsoup.parse(weatherElement.toString()).text();
 			
 			Elements locationElement = doc.select("h1");
-			String locationString = Jsoup.parse(locationElement.toString()).text();
+			String locationString = Jsoup.parse(locationElement.toString()).text().replace("Local Time", "Temperature");
 			
-			System.out.println(locationString + ": " + time);
+			System.out.println(locationString + ": " + weather);
 		}
-		
-		//If query is not specific enough, then will resort to using the first link location in search results
 		catch(Exception e)
 		{
-			
 			try
 			{
 				Elements linkElement = doc.select("td").first().getElementsByAttribute("href");
@@ -66,13 +64,13 @@ public class ScrapeTime
 					System.out.println("Something has gone wrong with your query. Please check your spelling, ensure network connection and try again.");
 				}
 				
-				Element timeElement = d.getElementById("ct");
-				time = Jsoup.parse(timeElement.toString()).text();
+				Element weatherElement = d.getElementById("wt-tp");
+				weather = Jsoup.parse(weatherElement.toString()).text();
 				
 				Elements locationElement = d.select("h1");
-				String locationString = Jsoup.parse(locationElement.toString()).text();
+				String locationString = Jsoup.parse(locationElement.toString()).text().replace("Local Time", "Temperature");
 				
-				System.out.println(locationString + ": " + time);
+				System.out.println(locationString + ": " + weather);
 			}
 			
 			//If query is misspelled or extraneous
@@ -80,10 +78,10 @@ public class ScrapeTime
 			{
 				System.out.println("Something has gone wrong with your query. Please check your spelling, ensure network connection and try again.");
 			}
-			
 		}
 		
 		
 	}
+	
 	
 }
