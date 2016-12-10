@@ -27,12 +27,12 @@ public class Main
 	{
 		String input;
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("What would you like to find? For a list of commands, enter 'commands'");
+		System.out.println(" What would you like to find? For a list of commands, type 'help' ");
 		input = scanner.nextLine();
 		
 		if (input.toLowerCase().equals("time"))
 		{
-			System.out.println("In which city would you like to know the time in?");
+			System.out.println("In what place would you like to know the time in?");
 			input = scanner.nextLine();
 			scrapeTime.scrapeTime(input);
 		}

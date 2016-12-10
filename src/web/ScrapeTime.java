@@ -31,9 +31,10 @@ public class ScrapeTime
 		} 
 		catch (IOException e) 
 		{
-			e.printStackTrace();
+			System.out.println("Something has gone wrong with your query. Please check your spelling and try again.");
 		}
 		
+		//If query specific enough to pull webpage directly, then, will be done in the try block
 		try
 		{
 			Element timeElement = doc.getElementById("ct");
@@ -44,11 +45,42 @@ public class ScrapeTime
 			
 			System.out.println(locationString + ": " + time);
 		}
+		
+		//If query is not specific enough, then will resort to using the first link location in search results
 		catch(Exception e)
 		{
-			Element timeElement = doc.getElementById("p0");
-			time = Jsoup.parse(timeElement.toString()).text();
-			System.out.println(time);
+			
+			try
+			{
+				Elements linkElement = doc.select("td").first().getElementsByAttribute("href");
+				String link = linkElement.attr("abs:href");
+				
+				Document d = null;
+				
+				try 
+				{
+					d = Jsoup.connect(link).get();
+				} 
+				catch (IOException e1) 
+				{
+					System.out.println("Something has gone wrong with your query. Please check your spelling and try again.");
+				}
+				
+				Element timeElement = d.getElementById("ct");
+				time = Jsoup.parse(timeElement.toString()).text();
+				
+				Elements locationElement = d.select("h1");
+				String locationString = Jsoup.parse(locationElement.toString()).text();
+				
+				System.out.println(locationString + ": " + time);
+			}
+			
+			//If query is misspelled or extraneous
+			catch(Exception e2)
+			{
+				System.out.println("Something has gone wrong with your query. Please check your spelling and try again.");
+			}
+			
 		}
 		
 		
